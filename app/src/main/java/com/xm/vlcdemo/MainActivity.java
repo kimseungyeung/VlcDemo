@@ -34,7 +34,7 @@ import java.security.cert.CertPathValidatorException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements IVLCVout.Callback, View.OnClickListener {
-    private static final String TAG = "main" ;
+    private static final String TAG = "event" ;
     RelativeLayout ll_view;
     ImageButton imbtn_view;
     private SurfaceView mSurface;
