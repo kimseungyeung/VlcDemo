@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">VlcDemo</string>
+    <string name="permission_ok">권한이 승인되어있습니다</string>
+    <string name="permission_no">권한을 확인해주세요</string>
 </resources>
