@@ -104,7 +104,10 @@ public class MainActivity extends AppCompatActivity implements IVLCVout.Callback
 //
 //            }
 //        }else{
-            mFilePath=Environment.getExternalStorageDirectory().getAbsolutePath()+"/DCIM/Camera/House.mp4";
+            mFilePath=Environment.getExternalStorageDirectory().getAbsolutePath()+"/YAHA.mp4";
+//        mFilePath=Environment.getExternalStorageDirectory().getAbsolutePath()+"/H.wmv";
+        mFilePath=Environment.getExternalStorageDirectory().getAbsolutePath()+"/DCIM/Camera/House.mp4";
+        mFilePath=getIntent().getStringExtra("path");
 //        }
         //mFilePath에 url 경로 지정
         //mFilePath= "rtsp://192.168.25.41:8554/live.ts";
