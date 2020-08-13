@@ -9,10 +9,10 @@
         android:layout_height="50dip"
         >
         <Button
-            android:id="@+id/btn_prv"
+            android:id="@+id/btn_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="prv"/>
+            android:text="menu"/>
 
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView

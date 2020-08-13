@@ -9,7 +9,7 @@ public class FileData implements Parcelable {
     String fname;
     String fpath;
     boolean isdirectory;
-
+    boolean isparent;
     public FileData(Bitmap thumnail, String fname, String fpath, boolean isdirectory) {
         this.thumnail = thumnail;
         this.fname = fname;
@@ -80,4 +80,12 @@ public class FileData implements Parcelable {
             return new FileData[size];
         }
     };
+
+    public void setIsparent(boolean isparent) {
+        this.isparent = isparent;
+    }
+
+    public boolean isIsparent() {
+        return isparent;
+    }
 }

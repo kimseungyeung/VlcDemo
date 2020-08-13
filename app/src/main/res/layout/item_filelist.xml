@@ -2,7 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="100dip"
+    android:layout_height="50dip"
     android:layout_marginBottom="10dip"
     >
     <LinearLayout
@@ -21,6 +21,9 @@
         android:layout_height="match_parent"
         android:layout_weight="8"
         android:gravity="center_vertical"
+        android:textSize="15dip"
+        android:paddingLeft="10dip"
+        android:textColor="@color/white"
         android:background="@color/colorAccent"/>
     </LinearLayout>
 </LinearLayout>

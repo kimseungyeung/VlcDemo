@@ -43,11 +43,19 @@ public class FilelistAdapter extends RecyclerView.Adapter<FilelistAdapter.ViewHo
     @Override
     public void onBindViewHolder( ViewHolder holder, int position) {
         FileData fdata=fileDatalist.get(position);
-        if(fdata.getThumnail()!=null) {
-            holder.iv_file.setImageBitmap(fdata.getThumnail());
-        }
-    holder.tv_file.setText(fdata.getFname());
+        if(fdata.isIsparent()){
+         holder.iv_file.setVisibility(View.GONE);
+         holder.tv_file.setText(fdata.getFname());
+        }else {
+            holder.iv_file.setVisibility(View.VISIBLE);
 
+            if (fdata.getThumnail() != null) {
+                holder.iv_file.setImageBitmap(fdata.getThumnail());
+            } else {
+                holder.iv_file.setImageDrawable(context.getDrawable(R.drawable.folder));
+            }
+            holder.tv_file.setText(fdata.getFname());
+        }
     }
 
     @Override
