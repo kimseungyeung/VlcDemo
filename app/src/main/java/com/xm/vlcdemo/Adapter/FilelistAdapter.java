@@ -84,4 +84,14 @@ public class FilelistAdapter extends RecyclerView.Adapter<FilelistAdapter.ViewHo
         this.fileDatalist = fileDatalist;
         notifyDataSetChanged();
     }
+    public void addFiledata(FileData fileData){
+        this.fileDatalist.add(fileData);
+        notifyDataSetChanged();
+    }
+    public void addallFiledata(ArrayList<FileData> fileData){
+        this.fileDatalist.clear();
+        this.fileDatalist=new ArrayList<>();
+        this.fileDatalist.addAll(fileData);
+        notifyDataSetChanged();
+    }
 }

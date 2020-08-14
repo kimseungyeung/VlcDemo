@@ -6,6 +6,11 @@
     android:gravity="center"
     android:background="@color/colorAccent">
     <Button
+        android:id="@+id/btn_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="image"/>
+    <Button
         android:id="@+id/btn_music"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

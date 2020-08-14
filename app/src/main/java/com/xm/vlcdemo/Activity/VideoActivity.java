@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.xm.vlcdemo.Adapter.FilelistAdapter;
 import com.xm.vlcdemo.Constants;
 import com.xm.vlcdemo.Data.FileData;
+import com.xm.vlcdemo.Dialog.ExitDialog;
 import com.xm.vlcdemo.MainApplication;
 import com.xm.vlcdemo.R;
 import com.xm.vlcdemo.Service.MusicService;
@@ -44,6 +45,7 @@ import java.util.ArrayList;
 
 public class VideoActivity extends AppCompatActivity implements IVLCVout.Callback, View.OnClickListener {
     public static final int Request_Read_Storage=100;
+    ExitDialog exitDialog=null;
     private static final String TAG = "VideoActivity";
     RelativeLayout ll_bar;
     RelativeLayout ll_view;
@@ -68,6 +70,7 @@ public class VideoActivity extends AppCompatActivity implements IVLCVout.Callbac
     FilelistAdapter filelistAdapter;
     ArrayList<FileData>flist;
     ArrayList<String>playlist;
+    int nowcount=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,7 +121,8 @@ public class VideoActivity extends AppCompatActivity implements IVLCVout.Callbac
         rl_flist.setAdapter(filelistAdapter);
         rl_flist.setLayoutManager(new LinearLayoutManager(this));
         playlist=new ArrayList<>();
-        application.isplaylist(playlist,f.getParentFile().getAbsolutePath(),type);
+        application.isplaylist(playlist,mFilePath,type);
+        playlist.add(mFilePath);
         filelistAdapter.setonitemclicklistener(new FilelistAdapter.OnItemClicklistener() {
             @Override
             public void onitemclick(View v, int position) {
@@ -130,14 +134,16 @@ public class VideoActivity extends AppCompatActivity implements IVLCVout.Callbac
                     flist=application.readfilelist(fdata.getFpath(),type);
                     filelistAdapter.setFileDatalist(flist);
                 }else{
-                    File f= new File(fdata.getFpath());
+                    isplaying=false;
                     playlist=new ArrayList<>();
-                    application.isplaylist(playlist,f.getParentFile().getAbsolutePath(),type);
-
+                    application.isplaylist(playlist,fdata.getFpath(),type);
                     mFilePath=fdata.getFpath();
+                    playlist.add(mFilePath);
+                    nowcount=0;
                     application.releasePlayer(VideoActivity.this,mSurface);
-                    application.createPlayer(TAG,VideoActivity.this,fdata.getFpath(), mSurface,eventListener
+                    application.createPlayer(TAG,VideoActivity.this,mFilePath, mSurface,eventListener
                             ,VideoActivity.this,false);
+
                 }
 
             }
@@ -178,6 +184,7 @@ public class VideoActivity extends AppCompatActivity implements IVLCVout.Callbac
     protected void onDestroy() {
         super.onDestroy();
         if(type==Constants.TYPE_VIDEO) {
+            isplaying=false;
             application.releasePlayer(this,mSurface);
         }else if(type==Constants.TYPE_MUSIC){
             stopService(mintent);
@@ -206,9 +213,6 @@ public class VideoActivity extends AppCompatActivity implements IVLCVout.Callbac
 
     //전체 화면
     private void hideSystemUI() {
-        // Set the IMMERSIVE flag.
-        // Set the content to appear under the system bars so that the content
-        // doesn't resize when the system bars hide and show.
         ll_view.setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -255,6 +259,13 @@ public class VideoActivity extends AppCompatActivity implements IVLCVout.Callbac
                     isview=true;
                 }
                 break;
+            case R.id.btn_ok:
+                exitDialog.dismiss();
+                finish();
+                break;
+            case R.id.btn_cancel:
+                exitDialog.dismiss();
+                break;
 
         }
     }
@@ -285,10 +296,9 @@ public class VideoActivity extends AppCompatActivity implements IVLCVout.Callbac
         }
     }
     public void timeset(String pt,String mt){
-        tv_nowtime.setText(pt);
-        if(tv_maxtime.getText().toString().equals("")) {
+            tv_nowtime.setText(pt);
             tv_maxtime.setText(mt);
-        }
+
     }
     public String calctime(int ps){
         String result="";
@@ -324,41 +334,6 @@ public class VideoActivity extends AppCompatActivity implements IVLCVout.Callbac
     }
 
 
-    private void setSize(int width, int height) {
-        mVideoWidth = width;
-        mVideoHeight = height;
-        if (mVideoWidth * mVideoHeight <= 1)
-            return;
-
-        if(mSurface == null)
-            return;
-
-        //화면사이즈
-        int w = getWindow().getDecorView().getWidth();
-        int h = getWindow().getDecorView().getHeight();
-
-        //Orientation 계산
-        boolean isPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
-        if (w > h && isPortrait || w < h && !isPortrait) {
-            int i = w;
-            w = h;
-            h = i;
-        }
-
-        float videoAR = (float) mVideoWidth / (float) mVideoHeight;
-        float screenAR = (float) w / (float) h;
-
-        if (screenAR < videoAR)
-            h = (int) (w / videoAR);
-        else
-            w = (int) (h * videoAR);
-
-        ViewGroup.LayoutParams lp = mSurface.getLayoutParams();
-        lp.width = w;
-        lp.height = h;
-        mSurface.setLayoutParams(lp);
-        mSurface.invalidate();
-    }
 
     private class MediaListner implements MediaPlayer.EventListener{
         private WeakReference<VideoActivity> act;
@@ -399,7 +374,11 @@ public class VideoActivity extends AppCompatActivity implements IVLCVout.Callbac
                         mm.isplaying = false;
                         maxtime= (int)(mm.getmedialength()/1000);
                         mm.timeset(mm.calctime(maxtime),mm.calctime(maxtime));
-
+                        application.releasePlayer(VideoActivity.this,mSurface);
+                        application.createPlayer(TAG,VideoActivity.this,playlist.get(nowcount)
+                                ,mSurface,eventListener
+                                ,VideoActivity.this,false);
+                        nowcount++;
                     }
                     break;
                 case MediaPlayer.Event.Playing:
@@ -446,7 +425,8 @@ public class VideoActivity extends AppCompatActivity implements IVLCVout.Callbac
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-
+       // super.onBackPressed();
+        exitDialog=  new ExitDialog(this,this,getString(R.string.finish_video));
+        exitDialog.show();
     }
 }
